@@ -12,7 +12,7 @@ class Player(Drawable):
     self.staggered = False
     self.hitDetection = False
     self.actionName = "idle"
-    self.health = 50
+    self.health = 1000
     self.hitTime = datetime.now()
 
   def setIdleActionName(self,name):
@@ -33,6 +33,8 @@ class Player(Drawable):
         self.actionTime = datetime.now() + timedelta(seconds=expires_in_seconds)
         print(f'setting actionTime {self.actionTime}')
 
+  # I increased the health value as a defunct fix cause I couldn't find a way to add a cooldown
+  # for hp reduction
   def hit_detection(self):
     if self.hitDetection == False:
       self.health -= 1

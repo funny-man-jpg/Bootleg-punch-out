@@ -2,6 +2,7 @@
 
 import random
 import pygame
+import time
 from drawable import Drawable
 from player import Player
 from pygame.locals import (
@@ -22,9 +23,6 @@ class Game:
     self.screen_w = screen_w
     self.screen_h = screen_h
     size = [screen_w, screen_h]
-    font = pygame.font.SysFont("comicsans", 30)
-    self.winText = font.render("WIN", 1, (0,0,0))
-    self.loseText = font.render("LOSE", 1, (0,0,0))
     pygame.display.set_caption('punch in')
     self.screen = pygame.display.set_mode(size)
     self.player = Player(100, 50, 200, 200)
@@ -34,6 +32,8 @@ class Game:
     self.player.loadFile('assets/p1HeadBlock.png','headblock')
     self.player.loadFile('assets/p1BodyBlock.png','bodyblock')
     self.player.loadFile('assets/p1Staggered.png','staggered')
+    self.player.loadFile('assets/winScreen.png','win')
+    self.player.loadFile('assets/loseScreen.png','lose')
     self.player.setCurrentSurface('idle')
     self.player.setIdleActionName('idle')
     self.enemy = Player(200, 50, 200, 200)
@@ -78,35 +78,31 @@ class Game:
           self.player.performAction('headblock')
         if event.key == K_x:
           self.player.performAction('bodyblock')
-    # DELETE THIS PRINT STATMENT LATER
     print(self.player.health)
-    # If health is 0 then quit
-    if self.player.health == 0 or self.enemy.health == 0:
-      #if self.player.health == 0:
-        #display_surface.blit(text, textRect)
-      return True
+    print(self.enemy.health)
+    if self.player.health <= 0 and self.enemy.health <= 0:
+        if self.player.health <= 0:
+          self.player.performAction('lose')
+          time.sleep(1)
+          return True
+        if self.enemy.health <= 0:
+          self.player.performAction('win')
+          time.sleep(1)
+          return True
     else:
       return False
 
   # This function is used to detect hits
   def hit_detection(self):
     # Just a bunch of checks, each either causeing a stagger or losing hp
-    if self.enemy.currentName == "headblock" and self.player.currentName == "headpunch":
-      self.player.performAction('staggered', 2)
-    elif self.enemy.currentName != "headblock" and self.player.currentName == "headpunch":
-      self.player.hit_detection()
-    if self.enemy.currentName == "bodyblock" and self.player.currentName == "bodypunch":
-      self.player.performAction('staggered', 2)
+    if self.enemy.currentName != "headblock" and self.player.currentName == "headpunch":
+      self.enemy.hit_detection()
     elif self.enemy.currentName != "bodyblock" and self.player.currentName == "bodypunch":
-      self.player.hit_detection()
-    if self.player.currentName == "headblock" and self.enemy.currentName == "headpunch":
-      self.enemy.performAction('staggered', 2)
+      self.enemy.hit_detection()
     elif self.player.currentName != "headblock" and self.enemy.currentName == "headpunch":
-      self.enemy.hit_detection()
-    if self.player.currentName == "bodyblock" and self.enemy.currentName == "bodypunch":
-      self.enemy.performAction('staggered', 2)
-    elif self.player.currentName == "bodyblock" and self.enemy.currentName == "bodypunch":
-      self.enemy.hit_detection()
+      self.player.hit_detection()
+    elif self.player.currentName != "bodyblock" and self.enemy.currentName == "bodypunch":
+      self.player.hit_detection()
 
   def p2_ai(self):
     #if not self.enemy.staggered:
@@ -139,15 +135,12 @@ class Game:
 
   def run(self):
     done = False
-    font = pygame.font.SysFont("comicsans", 30)
     clock = pygame.time.Clock()
     while not done:
       done = self.process_events()
       self.p2_ai()
       self.display_frame(self.screen)
       self.hit_detection()
-      playerHealth = font.render("HP: " + str(self.player.health), 1, (0,0,0))
-      enemyHealth = font.render("HP: " + str(self.enemy.health), 1, (0,0,0))
       for player in self.players:
         player.update()
       clock.tick(60)
