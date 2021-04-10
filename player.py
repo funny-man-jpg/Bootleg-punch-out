@@ -1,6 +1,8 @@
+# Importing other classes and things I need
 from drawable import Drawable
 from datetime import datetime, timedelta
 
+# Initialize the class
 class Player(Drawable):
   def __init__(self, pos_x, pos_y, width, height):
     super().__init__(pos_x, pos_y, width, height)
@@ -26,7 +28,7 @@ class Player(Drawable):
     elif self.cooldown == False:
       self.cooldown = True
       self.setCurrentSurface(name)
-      #Record exactly now + seconds as the action time expiry
+      # Record exactly now + seconds as the action time expiry
       if name != self.idleAction:
         self.actionTime = datetime.now() + timedelta(seconds=expires_in_seconds)
         print(f'setting actionTime {self.actionTime}')

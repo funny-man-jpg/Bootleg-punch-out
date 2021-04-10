@@ -1,6 +1,7 @@
+# Import the rest of the classes and a couple other things I need
+
 import random
 import pygame
-import time
 from drawable import Drawable
 from player import Player
 from pygame.locals import (
@@ -9,12 +10,12 @@ from pygame.locals import (
   K_z,
   K_x,
   KEYDOWN,
-  QUIT,
 )
 
 # Initialize a new class. In this case, it's going to be the game class
 class Game:
-  # Initializing the game class
+  # Initializing the game class, which consists of screen parameters, and creating
+  # new players.
   def __init__(self, screen_w, screen_h):
     super().__init__()
     pygame.init()
@@ -45,18 +46,26 @@ class Game:
     self.players.append(self.player)
     self.players.append(self.enemy)
 
+  
+# This function will do everything regarding key presses, and the quit function which
+# Allows the program to close.
   def process_events(self):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         return True
+      # If a key is pressed
       if event.type == KEYDOWN:
+        # Check if the key pressed is one in this if statement
         if event.key == K_a:
+          # Perform the action if it is.
+          # Check to see if the opponent is blocking or not, to activate the staggered state or
+          # Remove health.
+          # COMMENT ABOVE SUBJECT TO CHANGE
           if self.enemy.currentName == "headblock":
             self.player.performAction('staggered', 2)
           else:
             self.player.performAction('headpunch')
-          # Add function that will detect if the hit was blocked or if it hit, and the result will return true/false that will go into another function to stagger/remove health
-          # Animation dely will differ depending on the above outcome but for now just want it to be 1 second in between headpunch and idle.
+        # The rest of the function is the same as above but different actions/keys
         if event.key == K_s:
           if self.enemy.currentName == "bodyblock":
             self.player.performAction('staggered', 2)
@@ -66,13 +75,17 @@ class Game:
           self.player.performAction('headblock')
         if event.key == K_x:
           self.player.performAction('bodyblock')
+    # DELETE THIS PRINT STATMENT LATER
     print(self.player.health)
+    # If health is 0 then quit
     if self.player.health == 0 or self.enemy.health == 0:
       return True
     else:
       return False
 
-  def block_detection(self):
+  # This function is used to detect hits
+  def hit_detection(self):
+    # Just a bunch of checks, each either causeing a stagger or losing hp
     if self.enemy.currentName == "headblock" and self.player.currentName == "headpunch":
       self.player.performAction('staggered', 2)
     elif self.enemy.currentName != "headblock" and self.player.currentName == "headpunch":
@@ -126,7 +139,7 @@ class Game:
       done = self.process_events()
       self.p2_ai()
       self.display_frame(self.screen)
-      self.block_detection()
+      self.hit_detection()
       for player in self.players:
         player.update()
       clock.tick(60)
