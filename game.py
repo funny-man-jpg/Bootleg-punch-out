@@ -22,7 +22,10 @@ class Game:
     self.screen_w = screen_w
     self.screen_h = screen_h
     size = [screen_w, screen_h]
-    pygame.display.set_caption('test')
+    font = pygame.font.SysFont("comicsans", 30)
+    self.winText = font.render("WIN", 1, (0,0,0))
+    self.loseText = font.render("LOSE", 1, (0,0,0))
+    pygame.display.set_caption('punch in')
     self.screen = pygame.display.set_mode(size)
     self.player = Player(100, 50, 200, 200)
     self.player.loadFile('assets/p1Idle.png','idle')
@@ -79,6 +82,8 @@ class Game:
     print(self.player.health)
     # If health is 0 then quit
     if self.player.health == 0 or self.enemy.health == 0:
+      #if self.player.health == 0:
+        #display_surface.blit(text, textRect)
       return True
     else:
       return False
@@ -134,12 +139,15 @@ class Game:
 
   def run(self):
     done = False
+    font = pygame.font.SysFont("comicsans", 30)
     clock = pygame.time.Clock()
     while not done:
       done = self.process_events()
       self.p2_ai()
       self.display_frame(self.screen)
       self.hit_detection()
+      playerHealth = font.render("HP: " + str(self.player.health), 1, (0,0,0))
+      enemyHealth = font.render("HP: " + str(self.enemy.health), 1, (0,0,0))
       for player in self.players:
         player.update()
       clock.tick(60)

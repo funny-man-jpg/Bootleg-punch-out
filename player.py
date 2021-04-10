@@ -36,7 +36,7 @@ class Player(Drawable):
   def hit_detection(self):
     if self.hitDetection == False:
       self.health -= 1
-      self.hitDetection = True
+      self.hitDetection == True
     
     self.hitTime = datetime.now() + timedelta(seconds=1)
 
