@@ -1,5 +1,6 @@
 import pygame
 
+# Initialize the class
 class Drawable:
   def __init__(self, pos_x, pos_y, width, height):
     super().__init__()
@@ -7,26 +8,27 @@ class Drawable:
     self.pos_y = pos_y
     self.width = width
     self.height = height
-    #Contains "name" to "surface" for each image
+    # Contains "name" to "surface" for each image
     self.surfaces = {}
-    #Current surface with an image to draw
+    # Current surface with an image to draw
     self.surface = None
-    #Current name of the surface to draw
+    # Current name of the surface to draw
     self.currentName = ""
     
 
-  #Use this to load an image on to a named surface
+  # Loads files and gives them a nickname
   def loadFile(self, file, name):
     if file is not None:
       self.file = file
       image = pygame.image.load(file)
       self.surfaces[name] = pygame.transform.smoothscale(image, (self.width, self.height))
   
-  #Use this method to set an image name to draw
+  # Sets which image to draw
   def setCurrentSurface(self,name):
     self.surface = self.surfaces[name]
     self.currentName = name
 
+  # Actually draws the image
   def draw(self, surface):
     if self.surface is not None:
         surface.blit(self.surface,(self.pos_x, self.pos_y))

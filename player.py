@@ -20,7 +20,6 @@ class Player(Drawable):
     
   # Sets the surface to name for drawing with an expiry time in seconds.
   def performAction(self,name,expires_in_seconds=1):
-    #print(f'performAction {name} cooldown {self.cooldown}')
 
     if name == self.idleAction:
       self.cooldown = False
@@ -28,7 +27,7 @@ class Player(Drawable):
     elif self.cooldown == False:
       self.cooldown = True
       self.setCurrentSurface(name)
-      # Record exactly now + seconds as the action time expiry
+      # Setting up the delay for animations
       if name != self.idleAction:
         self.actionTime = datetime.now() + timedelta(seconds=expires_in_seconds)
         print(f'setting actionTime {self.actionTime}')
@@ -42,9 +41,10 @@ class Player(Drawable):
     
     self.hitTime = datetime.now() + timedelta(seconds=1)
 
+  # Updates the players, useful messages for tracking movements for debug purposes
   def update(self):
     now = datetime.now()
-
+    # Delay function for animations
     if now > self.actionTime and self.currentName != self.idleAction:
       print(f'setting back to idle {self.currentName}')
       self.cooldown = False

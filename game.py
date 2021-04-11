@@ -78,19 +78,7 @@ class Game:
           self.player.performAction('headblock')
         if event.key == K_x:
           self.player.performAction('bodyblock')
-    print(self.player.health)
-    print(self.enemy.health)
-    if self.player.health <= 0 and self.enemy.health <= 0:
-        if self.player.health <= 0:
-          self.player.performAction('lose')
-          time.sleep(1)
-          return True
-        if self.enemy.health <= 0:
-          self.player.performAction('win')
-          time.sleep(1)
-          return True
-    else:
-      return False
+    return False
 
   # This function is used to detect hits
   def hit_detection(self):
@@ -122,7 +110,7 @@ class Game:
     if attack == 3:
       self.enemy.performAction('headblock')
 
-
+  # Preps the screen to be drawn in the main class, and draws everything else
   def display_frame(self, screen):
     screen.fill((255, 255, 255))
 
@@ -132,7 +120,7 @@ class Game:
     
     pygame.display.flip()
 
-
+  # Runs everything in the program, called in main
   def run(self):
     done = False
     clock = pygame.time.Clock()
@@ -144,5 +132,4 @@ class Game:
       for player in self.players:
         player.update()
       clock.tick(60)
-
     pygame.quit()
